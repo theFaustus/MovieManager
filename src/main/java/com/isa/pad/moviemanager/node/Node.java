@@ -5,6 +5,10 @@
  */
 package com.isa.pad.moviemanager.node;
 
+import com.isa.pad.moviemanager.mediator.UdpResponse;
+import com.isa.pad.moviemanager.model.NodeDataSource;
+import com.isa.pad.moviemanager.util.JsonSerializer;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -16,7 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Faust
  */
 public class Node implements Runnable {
@@ -68,7 +71,14 @@ public class Node implements Runnable {
                 final DatagramPacket responseDatagram = new DatagramPacket(buf, buf.length);
                 responseDatagram.setAddress(datagramPacket.getAddress());
                 responseDatagram.setPort(datagramPacket.getPort());
-                responseDatagram.setData("ACK".getBytes());
+                NodeDataSource nodeDataSource = NodeDataSource.INSTANCE;
+                responseDatagram.setData(JsonSerializer.toJson(
+                        new UdpResponse(
+                                nodeDataSource.getNodeDataListSizeFor(getNodeName()),
+                                nodeDataSource.getNodeNumberOfConnectionsFor(getNodeName()),
+                                nodeDataSource.getNodeAddressFor(getNodeName()),
+                                nodeDataSource.getNodePortFor(getNodeName())
+                                )).getBytes());
                 socket.send(responseDatagram);
                 logger.log(Level.INFO, "Sent response.");
             }

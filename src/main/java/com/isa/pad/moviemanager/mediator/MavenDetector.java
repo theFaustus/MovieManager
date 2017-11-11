@@ -50,7 +50,7 @@ public class MavenDetector implements Runnable {
             executorService.shutdownNow();
             socket.close();
         } catch (SocketException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, "Socket closed!", ex);
         } catch (UnknownHostException ex) {
             logger.log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -73,7 +73,7 @@ public class MavenDetector implements Runnable {
                 logger.log(Level.INFO, "Nodes: " + nodes);
                 logger.log(Level.INFO, new String(packet.getData()));
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "Socket closed", ex);
+                logger.log(Level.INFO, "Reached time out limit. Socket closed");
 
             }
         }

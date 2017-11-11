@@ -18,11 +18,11 @@ public class NodeDemo {
     private static Logger logger = Logger.getLogger(MediatorDemo.class.getName());
 
     public static void main(String[] args) {
-        if (args.length < 1) {
-            logger.log(Level.SEVERE, "No name was provided!");
-            System.exit(0);
-        }
-        Node node = new Node(new NodeConfig(), NodeNames.valueOf(args[0]).name());
+//        if (args.length < 1) {
+//            logger.log(Level.SEVERE, "No name was provided!");
+//            System.exit(0);
+//        }
+        Node node = new Node(new NodeConfig(), NodeNames.FMOVIES.name());
         node.start();
         logger.log(Level.INFO, "Node " + node.getNodeName() + " is up...");
     }

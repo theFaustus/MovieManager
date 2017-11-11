@@ -2,9 +2,9 @@ package com.isa.pad.moviemanager.model;
 
 import com.isa.pad.moviemanager.node.NodeNames;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 
 /**
  * Created by Faust on 11/11/2017.
@@ -13,15 +13,57 @@ public enum NodeDataSource {
     INSTANCE();
 
     private HashMap<String, List<Movie>> movies = new HashMap<>();
+    private HashMap<String, URI> nodeAdresses = new HashMap<>();
+    private HashMap<String, Set<URI>> connections = new HashMap<>();
 
 
     NodeDataSource() {
+        supplyNodeMovies();
+        supplyNodePorts();
+        supplyNodeConnections();
+
+    }
+
+    private void supplyNodePorts() {
+        try {
+            nodeAdresses.put(NodeNames.FMOVIES.name(), new URI("tcp://localhost:4001"));
+            nodeAdresses.put(NodeNames.HDEUROPIX.name(), new URI("tcp://localhost:4002"));
+            nodeAdresses.put(NodeNames.IVI.name(), new URI("tcp://localhost:4003"));
+            nodeAdresses.put(NodeNames.IOMOVIES.name(), new URI("tcp://localhost:4004"));
+            nodeAdresses.put(NodeNames.PUTLOCKER.name(), new URI("tcp://localhost:4005"));
+            nodeAdresses.put(NodeNames.YESMOVIES.name(), new URI("tcp://localhost:4006"));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void supplyNodeMovies() {
         movies.put(NodeNames.FMOVIES.name(), getFmoviesDataList());
         movies.put(NodeNames.HDEUROPIX.name(), getHdeurpoixDataList());
         movies.put(NodeNames.IVI.name(), getIviDataList());
         movies.put(NodeNames.IOMOVIES.name(), getIomoviesDataList());
         movies.put(NodeNames.PUTLOCKER.name(), getPutlockerDataList());
         movies.put(NodeNames.YESMOVIES.name(), getYesmoviesDataList());
+    }
+
+    private void supplyNodeConnections() {
+        try {
+            connections.put(NodeNames.FMOVIES.name(),
+                    new HashSet<>(Arrays.asList(
+                            new URI("tcp://localhost:4001"),
+                            new URI("tcp://localhost:4002"),
+                            new URI("tcp://localhost:4003"),
+                            new URI("tcp://localhost:4004"))));
+            connections.put(NodeNames.HDEUROPIX.name(),
+                    new HashSet<>(Arrays.asList(
+                            new URI("tcp://localhost:4005"))));
+            connections.put(NodeNames.IVI.name(), new HashSet<>());
+            connections.put(NodeNames.IOMOVIES.name(), new HashSet<>());
+            connections.put(NodeNames.PUTLOCKER.name(), new HashSet<>());
+            connections.put(NodeNames.YESMOVIES.name(), new HashSet<>());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Movie> getFmoviesDataList() {
@@ -71,5 +113,25 @@ public enum NodeDataSource {
         list.add(new Movie("The Godfather", "Francis Ford Coppola", 1972));
         list.add(new Movie("Schinmdler`s List", "Steven Spielberg", 1993));
         return list;
+    }
+
+    public int getNodeDataListSizeFor(String nodeName) {
+        return this.movies.get(nodeName).size();
+    }
+
+    public int getNodePortFor(String nodeName) {
+        return this.nodeAdresses.get(nodeName).getPort();
+    }
+
+    public String getNodeAddressFor(String nodeName) {
+        return this.nodeAdresses.get(nodeName).getHost();
+    }
+
+    public List<Movie> getNodeDataListFor(String nodeName) {
+        return this.movies.get(nodeName);
+    }
+
+    public int getNodeNumberOfConnectionsFor(String nodeName) {
+        return this.connections.get(nodeName).size();
     }
 }
