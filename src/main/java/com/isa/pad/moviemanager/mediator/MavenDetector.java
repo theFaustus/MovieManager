@@ -1,5 +1,7 @@
 package com.isa.pad.moviemanager.mediator;
 
+import com.isa.pad.moviemanager.util.JsonSerializer;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -21,7 +23,7 @@ public class MavenDetector implements Runnable {
 
     private MediatorConfig config;
     private ExecutorService executorService = Executors.newFixedThreadPool(3);
-    private List<String> nodes = Collections.synchronizedList(new ArrayList<>());
+    private List<UdpResponse> udpResponses = Collections.synchronizedList(new ArrayList<>());
 
     private Logger logger = Logger.getLogger(MavenDetector.class.getName());
     private DatagramSocket socket;
@@ -63,8 +65,8 @@ public class MavenDetector implements Runnable {
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             try {
                 socket.receive(packet);
-                nodes.add(new String(packet.getData()));
-                logger.log(Level.INFO, "Nodes: " + nodes);
+                udpResponses.add(JsonSerializer.fromJson(new String(packet.getData()), UdpResponse.class));
+                logger.log(Level.INFO, "Nodes: " + udpResponses);
                 logger.log(Level.INFO, new String(packet.getData()));
             } catch (Exception ex) {
                 logger.log(Level.INFO, "Reached time out limit. Socket closed");
@@ -81,12 +83,12 @@ public class MavenDetector implements Runnable {
         this.config = config;
     }
 
-    public List<String> getNodes() {
-        return nodes;
+    public List<UdpResponse> getUdpResponses() {
+        return udpResponses;
     }
 
-    public void setNodes(List<String> nodes) {
-        this.nodes = nodes;
+    public void setUdpResponses(List<UdpResponse> udpResponses) {
+        this.udpResponses = udpResponses;
     }
 
 }

@@ -51,5 +51,13 @@ public class UdpResponse {
         this.port = port;
     }
 
-
+    @Override
+    public String toString() {
+        return "UdpResponse{" +
+                "dataSize=" + dataSize +
+                ", numberOfConnections=" + numberOfConnections +
+                ", address='" + address + '\'' +
+                ", port=" + port +
+                '}';
+    }
 }
