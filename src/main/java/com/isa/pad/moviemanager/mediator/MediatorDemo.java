@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Faust
  */
 public class MediatorDemo {
@@ -21,6 +20,5 @@ public class MediatorDemo {
         MavenDetector mavenDetector = new MavenDetector(new MediatorConfig());
         mavenDetector.discoverNodes();
         logger.log(Level.INFO, "Nodes: {0}", mavenDetector.getNodes().toString());
-        System.out.println(Arrays.toString(mavenDetector.getNodes().toArray()));
     }
 }

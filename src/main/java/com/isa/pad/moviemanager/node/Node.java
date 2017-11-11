@@ -19,19 +19,21 @@ import java.util.logging.Logger;
  *
  * @author Faust
  */
-public class NodeServer implements Runnable {
+public class Node implements Runnable {
 
-    private Logger logger = Logger.getLogger(NodeServer.class.getName());
+    private Logger logger = Logger.getLogger(Node.class.getName());
 
     private NodeConfig config;
     private ExecutorService executorService = Executors.newFixedThreadPool(3);
     private MulticastSocket socket;
+    private String nodeName;
 
-    public NodeServer(NodeConfig config) {
+    public Node(NodeConfig config, String nodeName) {
         this.config = config;
         try {
             this.socket = new MulticastSocket(config.getDiscoverPort());
             this.socket.joinGroup(InetAddress.getByName(config.getDiscoverAddress()));
+            this.nodeName = nodeName;
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
@@ -75,4 +77,11 @@ public class NodeServer implements Runnable {
         }
     }
 
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
+    }
 }

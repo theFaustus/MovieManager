@@ -6,11 +6,11 @@
 package com.isa.pad.moviemanager.node;
 
 import com.isa.pad.moviemanager.mediator.MediatorDemo;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Faust
  */
 public class NodeDemo {
@@ -18,8 +18,12 @@ public class NodeDemo {
     private static Logger logger = Logger.getLogger(MediatorDemo.class.getName());
 
     public static void main(String[] args) {
-        NodeServer nodeServer = new NodeServer(new NodeConfig());
-        nodeServer.start();
-        logger.log(Level.INFO, "Node is up...");
+        if (args.length < 1) {
+            logger.log(Level.SEVERE, "No name was provided!");
+            System.exit(0);
+        }
+        Node node = new Node(new NodeConfig(), NodeNames.valueOf(args[0]).name());
+        node.start();
+        logger.log(Level.INFO, "Node " + node.getNodeName() + " is up...");
     }
 }
