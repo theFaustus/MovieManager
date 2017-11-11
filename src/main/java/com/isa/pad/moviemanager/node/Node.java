@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.isa.pad.moviemanager.node;
 
 import com.isa.pad.moviemanager.mediator.UdpResponse;
@@ -20,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Faust
+ * Created by Faust on 11/11/2017.
  */
 public class Node implements Runnable {
 
