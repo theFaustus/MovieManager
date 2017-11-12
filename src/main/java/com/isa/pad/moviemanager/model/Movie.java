@@ -1,8 +1,12 @@
 package com.isa.pad.moviemanager.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by Faust on 11/11/2017.
  */
+
+@XmlRootElement
 public class Movie {
     private String name;
     private String author;
