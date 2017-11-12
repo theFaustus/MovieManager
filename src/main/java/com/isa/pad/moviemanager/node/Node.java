@@ -64,6 +64,7 @@ public class Node implements Runnable {
                 final byte[] buf = new byte[4096];
                 final DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length);
                 socket.receive(datagramPacket);
+                logger.log(Level.INFO, "Got discover datagram from mediator. Datagram {0}", datagramPacket);
                 String data = new String(datagramPacket.getData());
                 logger.log(Level.INFO, data);
                 final DatagramPacket responseDatagram = new DatagramPacket(buf, buf.length);
@@ -78,7 +79,7 @@ public class Node implements Runnable {
                                 movieDataSource.getNodePortFor(getNodeName())
                                 )).getBytes());
                 socket.send(responseDatagram);
-                logger.log(Level.INFO, "Sent response.");
+                logger.log(Level.INFO, "Sent response datagram. Datagram {0}", responseDatagram);
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);

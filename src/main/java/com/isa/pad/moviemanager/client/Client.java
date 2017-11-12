@@ -1,8 +1,7 @@
 package com.isa.pad.moviemanager.client;
 
 import com.isa.pad.moviemanager.model.Movie;
-import com.isa.pad.moviemanager.util.JsonSerializer;
-import com.isa.pad.moviemanager.util.TcpResponse;
+import com.isa.pad.moviemanager.util.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 /**
  * Created by Faust on 11/12/2017.
  */
-public class Client{
+public class Client {
     private ClientConfig clientConfig;
     private Socket socket;
     private Logger logger = Logger.getLogger(Client.class.getName());
@@ -39,11 +39,19 @@ public class Client{
 
     }
 
-    public List<Movie> sendRequest(String data){
-        write(data);
-        String mediatorResponse = read();
-        TcpResponse tcpResponse = JsonSerializer.fromJson(mediatorResponse, TcpResponse.class);
-        return  tcpResponse.getMovies();
+    public List<Movie> sendRequest(Request request) {
+        String jsonSerializedRequest = JsonSerializer.toJson(request);
+        write(jsonSerializedRequest);
+        logger.log(Level.INFO, "Request sent. Data: {0}", request);
+        String mediatorXmlSerializedResponse = read();
+        logger.log(Level.INFO, "Got mediator response in XML. Response: {0}", mediatorXmlSerializedResponse);
+        XmlValidator xmlValidator = new XmlValidator("tcp_response_schema.xsd", TcpResponse.class);
+        if (xmlValidator.validate(mediatorXmlSerializedResponse)) {
+            TcpResponse tcpResponse = XmlSerializer.fromXml(mediatorXmlSerializedResponse, TcpResponse.class);
+            return tcpResponse.getMovies();
+        }
+        logger.log(Level.WARNING, "Invalid XML data.");
+        return new ArrayList<>();
     }
 
     public ClientConfig getClientConfig() {
@@ -57,7 +65,7 @@ public class Client{
     private String read() {
         StringBuilder stringBuilder = new StringBuilder();
         String line = "";
-        while ((line = readLine()) != null && line.trim().length() > 0){
+        while ((line = readLine()) != null && line.trim().length() > 0) {
             stringBuilder.append(line).append("\n");
         }
         return stringBuilder.toString();

@@ -67,8 +67,8 @@ public enum MovieDataSource {
 
     private List<Movie> getFmoviesDataList() {
         List<Movie> list = new ArrayList<>();
-        list.add(new Movie("Pulp Fiction", "Quentin Tarantion", 1994));
         list.add(new Movie("Lock, Stock and Two Smoking Barrels", "Guy Ritchie", 1998));
+        list.add(new Movie("Pulp Fiction", "Quentin Tarantion", 1994));
         list.add(new Movie("Snatch", "Guy Ritchie", 2000));
         return list;
     }
@@ -77,6 +77,7 @@ public enum MovieDataSource {
         List<Movie> list = new ArrayList<>();
         list.add(new Movie("The Wolf of Wall Street", "Martin Scorsese", 2013));
         list.add(new Movie("Goodfellas", "Martin Scorsese", 1990));
+        list.add(new Movie("The Hangover", "Tod Phillips", 2009));
         return list;
     }
 

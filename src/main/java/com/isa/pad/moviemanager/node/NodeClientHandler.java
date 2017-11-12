@@ -2,7 +2,9 @@ package com.isa.pad.moviemanager.node;
 
 import com.isa.pad.moviemanager.model.Movie;
 import com.isa.pad.moviemanager.model.MovieDataSource;
+import com.isa.pad.moviemanager.util.DslExecutor;
 import com.isa.pad.moviemanager.util.JsonSerializer;
+import com.isa.pad.moviemanager.util.Request;
 import com.isa.pad.moviemanager.util.TcpResponse;
 
 import java.io.BufferedReader;
@@ -41,6 +43,8 @@ public class NodeClientHandler implements Runnable{
     @Override
     public void run() {
         String mediatorRequest = read(bufferedReader);
+        logger.log(Level.INFO, "Got mediator request in JSON. Request: {0}", mediatorRequest);
+        Request request = JsonSerializer.fromJson(mediatorRequest, Request.class);
         List<Movie> nodeDataList = new ArrayList<>();
         for(URI u: MovieDataSource.INSTANCE.getConnectionsFor(nodeName)){
             try {
@@ -48,7 +52,9 @@ public class NodeClientHandler implements Runnable{
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 PrintWriter printWriter = new PrintWriter(s.getOutputStream());
                 write(mediatorRequest, printWriter);
+                logger.log(Level.INFO, "Mediator request sent. Request: {1}", mediatorRequest);
                 String nodeResponse = read(bufferedReader);
+                logger.log(Level.INFO, "Got mediator response in JSON. Response: {0}", nodeResponse);
                 TcpResponse tcpResponse = JsonSerializer.fromJson(nodeResponse, TcpResponse.class);
                 nodeDataList.addAll(tcpResponse.getMovies());
                 bufferedReader.close();
@@ -59,6 +65,9 @@ public class NodeClientHandler implements Runnable{
         }
         TcpResponse tcpResponse = new TcpResponse(nodeDataList);
         tcpResponse.getMovies().addAll(MovieDataSource.INSTANCE.getNodeDataListFor(nodeName));
+        DslExecutor dslExecutor = new DslExecutor(request, tcpResponse.getMovies());
+        List<Movie> filteredList = dslExecutor.execute();
+        tcpResponse.setMovies(filteredList);
         write(JsonSerializer.toJson(tcpResponse), printWriter);
     }
 

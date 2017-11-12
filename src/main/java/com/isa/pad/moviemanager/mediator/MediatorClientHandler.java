@@ -1,11 +1,17 @@
 package com.isa.pad.moviemanager.mediator;
 
+import com.isa.pad.moviemanager.util.JsonSerializer;
+import com.isa.pad.moviemanager.util.TcpResponse;
+import com.isa.pad.moviemanager.util.XmlSerializer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Faust on 11/12/2017.
@@ -19,6 +25,7 @@ public class MediatorClientHandler implements Runnable {
     private PrintWriter clientPrintWriter;
     private BufferedReader mavenBufferedReader;
     private PrintWriter mavenPrintWriter;
+    private Logger logger = Logger.getLogger(MediatorClientHandler.class.getName());
 
     public MediatorClientHandler(Socket clientSocket, Maven maven) {
         this.clientSocket = clientSocket;
@@ -36,10 +43,15 @@ public class MediatorClientHandler implements Runnable {
 
     @Override
     public void run() {
-        String clientRequest = read(clientBufferedReader);
-        write(clientRequest, mavenPrintWriter);
-        String mavenResponse = read(mavenBufferedReader);
-        write(mavenResponse, clientPrintWriter);
+        String jsonSerializedClientRequest = read(clientBufferedReader);
+        logger.log(Level.INFO, "Got client request in JSON. Request: {0}", jsonSerializedClientRequest);
+        write(jsonSerializedClientRequest, mavenPrintWriter);
+        String mavenJsonSerializedResponse = read(mavenBufferedReader);
+        logger.log(Level.INFO, "Got maven response in JSON. Response: {0}", mavenJsonSerializedResponse);
+        TcpResponse tcpResponse = JsonSerializer.fromJson(mavenJsonSerializedResponse, TcpResponse.class);
+        String mavenXmlSerializedResponse = XmlSerializer.toXml(tcpResponse, TcpResponse.class);
+        write(mavenXmlSerializedResponse, clientPrintWriter);
+        logger.log(Level.INFO, "Maven response converted in XML sent. Response: {0}", mavenXmlSerializedResponse);
     }
 
     private String read(BufferedReader bufferedReader) {

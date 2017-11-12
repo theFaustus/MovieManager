@@ -43,7 +43,7 @@ public class XmlValidator implements ValidationEventHandler {
         }
         return isValid;
     }
-    
+
 
     @Override
     public boolean handleEvent(ValidationEvent event) {
