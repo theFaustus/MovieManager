@@ -45,13 +45,19 @@ public class MediatorClientHandler implements Runnable {
     public void run() {
         String jsonSerializedClientRequest = read(clientBufferedReader);
         logger.log(Level.INFO, "Got client request in JSON. Request: {0}", jsonSerializedClientRequest);
+        String responseType = jsonSerializedClientRequest.substring(0, jsonSerializedClientRequest.indexOf("\n"));
+        jsonSerializedClientRequest = jsonSerializedClientRequest.substring(jsonSerializedClientRequest.indexOf("\n") + 1);
         write(jsonSerializedClientRequest, mavenPrintWriter);
         String mavenJsonSerializedResponse = read(mavenBufferedReader);
-        logger.log(Level.INFO, "Got maven response in JSON. Response: {0}", mavenJsonSerializedResponse);
-        TcpResponse tcpResponse = JsonSerializer.fromJson(mavenJsonSerializedResponse, TcpResponse.class);
-        String mavenXmlSerializedResponse = XmlSerializer.toXml(tcpResponse, TcpResponse.class);
-        write(mavenXmlSerializedResponse, clientPrintWriter);
-        logger.log(Level.INFO, "Maven response converted in XML sent. Response: {0}", mavenXmlSerializedResponse);
+        if (responseType.endsWith("json")) {
+            write(mavenJsonSerializedResponse, clientPrintWriter);
+        } else {
+            logger.log(Level.INFO, "Got maven response in JSON. Response: {0}", mavenJsonSerializedResponse);
+            TcpResponse tcpResponse = JsonSerializer.fromJson(mavenJsonSerializedResponse, TcpResponse.class);
+            String mavenXmlSerializedResponse = XmlSerializer.toXml(tcpResponse, TcpResponse.class);
+            write(mavenXmlSerializedResponse, clientPrintWriter);
+            logger.log(Level.INFO, "Maven response converted in XML sent. Response: {0}", mavenXmlSerializedResponse);
+        }
     }
 
     private String read(BufferedReader bufferedReader) {

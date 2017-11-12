@@ -18,7 +18,7 @@ public class ClientDemo {
                 .orderBy("year")
                 .build();
 
-        List<Movie> movies = client.sendRequest(r);
+        List<Movie> movies = client.sendRequest(ResponseType.JSON_TYPE.getType(), r);
 
         System.out.println(movies);
     }
