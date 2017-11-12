@@ -1,8 +1,8 @@
 
 package com.isa.pad.moviemanager.node;
 
-import com.isa.pad.moviemanager.mediator.UdpResponse;
-import com.isa.pad.moviemanager.model.NodeDataSource;
+import com.isa.pad.moviemanager.util.UdpResponse;
+import com.isa.pad.moviemanager.model.MovieDataSource;
 import com.isa.pad.moviemanager.util.JsonSerializer;
 
 import java.io.IOException;
@@ -23,9 +23,10 @@ public class Node implements Runnable {
     private Logger logger = Logger.getLogger(Node.class.getName());
 
     private NodeConfig config;
-    private ExecutorService executorService = Executors.newFixedThreadPool(3);
+    private ExecutorService executorService = Executors.newFixedThreadPool(10);
     private MulticastSocket socket;
     private String nodeName;
+    private NodeDataExchangeServer nodeDataExchangeServer;
 
     public Node(NodeConfig config, String nodeName) {
         this.config = config;
@@ -41,6 +42,7 @@ public class Node implements Runnable {
 
     public void start() {
         executorService.submit(this);
+        nodeDataExchangeServer = new NodeDataExchangeServer(config, executorService, nodeName);
     }
 
     public void stop() {
@@ -67,13 +69,13 @@ public class Node implements Runnable {
                 final DatagramPacket responseDatagram = new DatagramPacket(buf, buf.length);
                 responseDatagram.setAddress(datagramPacket.getAddress());
                 responseDatagram.setPort(datagramPacket.getPort());
-                NodeDataSource nodeDataSource = NodeDataSource.INSTANCE;
+                MovieDataSource movieDataSource = MovieDataSource.INSTANCE;
                 responseDatagram.setData(JsonSerializer.toJson(
                         new UdpResponse(
-                                nodeDataSource.getNodeDataListSizeFor(getNodeName()),
-                                nodeDataSource.getNodeNumberOfConnectionsFor(getNodeName()),
-                                nodeDataSource.getNodeAddressFor(getNodeName()),
-                                nodeDataSource.getNodePortFor(getNodeName())
+                                movieDataSource.getNodeDataListSizeFor(getNodeName()),
+                                movieDataSource.getNodeNumberOfConnectionsFor(getNodeName()),
+                                movieDataSource.getNodeAddressFor(getNodeName()),
+                                movieDataSource.getNodePortFor(getNodeName())
                                 )).getBytes());
                 socket.send(responseDatagram);
                 logger.log(Level.INFO, "Sent response.");

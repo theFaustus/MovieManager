@@ -10,6 +10,9 @@ public class MediatorConfig {
     private int timeout = 10_000;
     private int clientPort = 8888;
 
+    private String mediatorAddress = "localhost";
+    private int mediatorPort = 7777;
+
     public String getNodeDiscoverAddress() {
         return nodeDiscoverAddress;
     }
@@ -42,4 +45,19 @@ public class MediatorConfig {
         this.clientPort = clientPort;
     }
 
+    public String getMediatorAddress() {
+        return mediatorAddress;
+    }
+
+    public void setMediatorAddress(String mediatorAddress) {
+        this.mediatorAddress = mediatorAddress;
+    }
+
+    public int getMediatorPort() {
+        return mediatorPort;
+    }
+
+    public void setMediatorPort(int mediatorPort) {
+        this.mediatorPort = mediatorPort;
+    }
 }

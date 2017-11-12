@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Created by Faust on 11/11/2017.
  */
-public enum NodeDataSource {
+public enum MovieDataSource {
     INSTANCE();
 
     private HashMap<String, List<Movie>> movies = new HashMap<>();
@@ -17,7 +17,7 @@ public enum NodeDataSource {
     private HashMap<String, Set<URI>> connections = new HashMap<>();
 
 
-    NodeDataSource() {
+    MovieDataSource() {
         supplyNodeMovies();
         supplyNodePorts();
         supplyNodeConnections();
@@ -50,7 +50,6 @@ public enum NodeDataSource {
         try {
             connections.put(NodeNames.FMOVIES.name(),
                     new HashSet<>(Arrays.asList(
-                            new URI("tcp://localhost:4001"),
                             new URI("tcp://localhost:4002"),
                             new URI("tcp://localhost:4003"),
                             new URI("tcp://localhost:4004"))));
@@ -66,7 +65,7 @@ public enum NodeDataSource {
         }
     }
 
-    public List<Movie> getFmoviesDataList() {
+    private List<Movie> getFmoviesDataList() {
         List<Movie> list = new ArrayList<>();
         list.add(new Movie("Pulp Fiction", "Quentin Tarantion", 1994));
         list.add(new Movie("Lock, Stock and Two Smoking Barrels", "Guy Ritchie", 1998));
@@ -74,15 +73,14 @@ public enum NodeDataSource {
         return list;
     }
 
-    public List<Movie> getHdeurpoixDataList() {
+    private List<Movie> getHdeurpoixDataList() {
         List<Movie> list = new ArrayList<>();
         list.add(new Movie("The Wolf of Wall Street", "Martin Scorsese", 2013));
         list.add(new Movie("Goodfellas", "Martin Scorsese", 1990));
         return list;
     }
 
-
-    public List<Movie> getIviDataList() {
+    private List<Movie> getIviDataList() {
         List<Movie> list = new ArrayList<>();
         list.add(new Movie("Brother", "Alexei Balabanov", 2000));
         list.add(new Movie("Ballad of Soldier", "Grigoriy Chukhray", 1959));
@@ -91,7 +89,7 @@ public enum NodeDataSource {
         return list;
     }
 
-    public List<Movie> getIomoviesDataList() {
+    private List<Movie> getIomoviesDataList() {
         List<Movie> list = new ArrayList<>();
         list.add(new Movie("The Hangover", "Tod Phillips", 2009));
         list.add(new Movie("21 Jump Street", "Phil Lord", 2012));
@@ -99,7 +97,7 @@ public enum NodeDataSource {
         return list;
     }
 
-    public List<Movie> getPutlockerDataList() {
+    private List<Movie> getPutlockerDataList() {
         List<Movie> list = new ArrayList<>();
         list.add(new Movie("IT", "Andy Muschietti", 2017));
         list.add(new Movie("Split", "M. Night Shyamalan", 2016));
@@ -107,7 +105,7 @@ public enum NodeDataSource {
         return list;
     }
 
-    public List<Movie> getYesmoviesDataList() {
+    private List<Movie> getYesmoviesDataList() {
         List<Movie> list = new ArrayList<>();
         list.add(new Movie("The Shawshank Redemption", "Frank Darabont", 1972));
         list.add(new Movie("The Godfather", "Francis Ford Coppola", 1972));
@@ -134,4 +132,6 @@ public enum NodeDataSource {
     public int getNodeNumberOfConnectionsFor(String nodeName) {
         return this.connections.get(nodeName).size();
     }
+
+    public Set<URI> getConnectionsFor(String nodeName) {return this.connections.get(nodeName);}
 }

@@ -1,4 +1,4 @@
-package com.isa.pad.moviemanager.mediator;
+package com.isa.pad.moviemanager.util;
 
 /**
  * Created by Faust on 11/11/2017.

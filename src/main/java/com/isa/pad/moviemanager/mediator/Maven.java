@@ -1,5 +1,7 @@
 package com.isa.pad.moviemanager.mediator;
 
+import com.isa.pad.moviemanager.util.UdpResponse;
+
 /**
  * Created by Faust on 11/12/2017.
  */
