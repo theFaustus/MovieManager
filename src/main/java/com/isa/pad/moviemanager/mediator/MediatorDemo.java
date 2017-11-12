@@ -16,5 +16,6 @@ public class MediatorDemo {
         MavenDetector mavenDetector = new MavenDetector(new MediatorConfig());
         mavenDetector.discoverNodes();
         logger.log(Level.INFO, "Nodes: {0}", mavenDetector.getUdpResponses());
+        logger.log(Level.INFO, "Maven detected: {0}", mavenDetector.getMaven());
     }
 }

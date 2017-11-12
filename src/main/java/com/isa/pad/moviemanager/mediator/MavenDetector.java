@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -24,6 +25,7 @@ public class MavenDetector implements Runnable {
     private MediatorConfig config;
     private ExecutorService executorService = Executors.newFixedThreadPool(3);
     private List<UdpResponse> udpResponses = Collections.synchronizedList(new ArrayList<>());
+    private volatile Maven maven;
 
     private Logger logger = Logger.getLogger(MavenDetector.class.getName());
     private DatagramSocket socket;
@@ -54,7 +56,7 @@ public class MavenDetector implements Runnable {
         } catch (InterruptedException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
-
+        detectMaven();
     }
 
     @Override
@@ -67,12 +69,25 @@ public class MavenDetector implements Runnable {
                 socket.receive(packet);
                 udpResponses.add(JsonSerializer.fromJson(new String(packet.getData()), UdpResponse.class));
                 logger.log(Level.INFO, "Nodes: " + udpResponses);
-                logger.log(Level.INFO, new String(packet.getData()));
             } catch (Exception ex) {
                 logger.log(Level.INFO, "Reached time out limit. Socket closed");
-
             }
         }
+    }
+
+    private void detectMaven() {
+        Optional<Maven> maven = udpResponses.stream().sorted().map(Maven::new).findFirst();
+        maven.ifPresent(m -> this.maven = m);
+        if (!maven.isPresent())
+            logger.log(Level.WARNING, "Maven not found.");
+    }
+
+    public Maven getMaven() {
+        return maven;
+    }
+
+    public void setMaven(Maven maven) {
+        this.maven = maven;
     }
 
     public MediatorConfig getConfig() {

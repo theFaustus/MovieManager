@@ -3,7 +3,7 @@ package com.isa.pad.moviemanager.mediator;
 /**
  * Created by Faust on 11/11/2017.
  */
-public class UdpResponse {
+public class UdpResponse implements Comparable<UdpResponse> {
     private int dataSize;
     private int numberOfConnections;
     private String address;
@@ -59,5 +59,11 @@ public class UdpResponse {
                 ", address='" + address + '\'' +
                 ", port=" + port +
                 '}';
+    }
+
+    @Override
+    public int compareTo(UdpResponse other) {
+        int result = Integer.compare(other.numberOfConnections, this.numberOfConnections);
+        return result != 0 ? result : Integer.compare(other.dataSize, this.dataSize);
     }
 }
