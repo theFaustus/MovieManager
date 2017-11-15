@@ -39,7 +39,7 @@ public class XmlValidator implements ValidationEventHandler {
         } catch (JAXBException e) {
             logger.log(Level.SEVERE, "JAXBException", e);
         } catch (SAXException e) {
-            logger.log(Level.SEVERE, "SAXEscption", e);
+            logger.log(Level.SEVERE, "SAXException", e);
         }
         return isValid;
     }

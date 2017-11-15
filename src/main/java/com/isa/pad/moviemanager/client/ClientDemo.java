@@ -3,6 +3,7 @@ package com.isa.pad.moviemanager.client;
 import com.isa.pad.moviemanager.model.Movie;
 import com.isa.pad.moviemanager.util.Request;
 
+
 import java.util.List;
 
 /**
@@ -21,5 +22,6 @@ public class ClientDemo {
         List<Movie> movies = client.sendRequest(ResponseType.JSON_TYPE.getType(), r);
 
         System.out.println(movies);
+
     }
 }

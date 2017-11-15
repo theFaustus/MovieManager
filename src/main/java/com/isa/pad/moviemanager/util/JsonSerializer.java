@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 /**
  * Created by Faust on 11/11/2017.
  */
+
 public class JsonSerializer {
     private static Logger logger = Logger.getLogger(JsonSerializer.class.getName());
 

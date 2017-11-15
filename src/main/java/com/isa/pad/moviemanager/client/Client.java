@@ -39,14 +39,20 @@ public class Client {
 
     }
 
+
     public List<Movie> sendRequest(String responseType, Request request) {
         String jsonSerializedRequest = JsonSerializer.toJson(request);
         write("Response type: " + responseType + "\n" + jsonSerializedRequest);
         logger.log(Level.INFO, "Request sent. Data: {0}", request);
         String mediatorSerializedResponse = read();
-        if(responseType.endsWith(ResponseType.JSON_TYPE.getType())){
-            TcpResponse tcpResponse = JsonSerializer.fromJson(mediatorSerializedResponse, TcpResponse.class);
-            return tcpResponse.getMovies();
+        if (responseType.endsWith(ResponseType.JSON_TYPE.getType())) {
+            logger.log(Level.INFO, "Got mediator response in JSON. Response: {0}", mediatorSerializedResponse);
+            JsonValidator jsonValidator = new JsonValidator("tcp_response_schema.json");
+            if (jsonValidator.validate(mediatorSerializedResponse)) {
+                TcpResponse tcpResponse = JsonSerializer.fromJson(mediatorSerializedResponse, TcpResponse.class);
+                return tcpResponse.getMovies();
+            }
+            logger.log(Level.WARNING, "Invalid JSON data.");
         } else {
             logger.log(Level.INFO, "Got mediator response in XML. Response: {0}", mediatorSerializedResponse);
             XmlValidator xmlValidator = new XmlValidator("tcp_response_schema.xsd", TcpResponse.class);

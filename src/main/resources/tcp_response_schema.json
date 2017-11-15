@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "id": "urn:jsonschema:com:isa:pad:moviemanager:util:TcpResponse",
+  "properties": {
+    "movies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "id": "urn:jsonschema:com:isa:pad:moviemanager:model:Movie",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
